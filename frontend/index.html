@@ -22,11 +22,22 @@
             gap: 2rem;
             color: var(--gray-700);
             font-size: 1.1rem;
+            font-weight: 600;
         }
         
         .hero-info-item {
             display: flex;
             align-items: center;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+        
+        .hero-info-item:hover {
+            transform: translateY(-2px);
+        }
+        
+        a.hero-info-item:hover {
+            color: var(--primary) !important;
         }
         
         .announcement {
@@ -73,7 +84,11 @@
     <nav class="navbar">
         <div class="container">
             <div class="navbar-content">
-                <a href="index.html" class="navbar-brand icon-trophy">
+                <a href="index.html" class="navbar-brand">
+                    <div class="logo-container">
+                        <img src="imageHero/logounpatti.png" alt="Logo Unpatti" class="logo-img">
+                        <img src="imageHero/logofst.png" alt="Logo FST" class="logo-img">
+                    </div>
                     Olimpiade Sains
                 </a>
                 <a href="login.html" class="btn btn-primary icon-login">
@@ -85,20 +100,37 @@
 
     <!-- Hero Section -->
     <section class="hero">
+        <!-- Background Slideshow -->
+        <div class="hero-background">
+            <div class="hero-slide active">
+                <img src="imageHero/hero1.jpg" alt="Hero 1" style="width: 100%; height: 100%; object-fit: cover; object-position: center;">
+            </div>
+            <div class="hero-slide">
+                <img src="imageHero/hero2.jpg" alt="Hero 2" style="width: 100%; height: 100%; object-fit: cover; object-position: center;">
+            </div>
+            <div class="hero-slide">
+                <img src="imageHero/hero3.jpg" alt="Hero 3" style="width: 100%; height: 100%; object-fit: cover; object-position: center;">
+            </div>
+        </div>
+        
+        <!-- Overlay -->
+        <div class="hero-overlay"></div>
+        
         <div class="container">
             <h1 class="hero-title" id="judulUtama">
-                Olimpiade Sains Nasional 2026
+                Olimpiade Sains Fakultas Sains Dan Teknologi 2026
             </h1>
             <p class="hero-subtitle" id="deskripsiSingkat">
-                Bergabunglah dalam kompetisi sains terbesar untuk siswa SD, SMP, dan SMA se-Indonesia
+                Bergabunglah dalam kompetisi sains terbesar untuk siswa SD, SMP, dan SMA se-Maluku. Tunjukkan kemampuan terbaikmu!
             </p>
             <div class="hero-info">
                 <div class="hero-info-item icon-calendar">
                     <span id="tanggalPelaksanaan">15 Juli - 20 Juli 2026</span>
                 </div>
-                <div class="hero-info-item icon-location">
-                    <span id="lokasi">Jakarta Convention Center</span>
-                </div>
+                <a href="https://www.google.com/maps/place/85WV+599+Unpatti,+Jl.+Kampus+Jl.+Ir.+M.+Putuhena,+Poka,+Kec.+Tlk.+Ambon,+Kota+Ambon,+Maluku" target="_blank" class="hero-info-item" style="text-decoration: none; color: var(--gray-700);">
+                    <img src="imageHero/logogmaps.png" alt="Google Maps" style="width: 1.5rem; height: 1.5rem; margin-right: 0.75rem; object-fit: contain;">
+                    <span id="lokasi">Universitas Pattimura Ambon</span>
+                </a>
             </div>
         </div>
     </section>
@@ -227,5 +259,20 @@
 
     <script src="js/config.js"></script>
     <script src="js/landing.js"></script>
+    <script>
+        // Hero Background Slideshow
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.hero-slide');
+        const totalSlides = slides.length;
+
+        function nextSlide() {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % totalSlides;
+            slides[currentSlide].classList.add('active');
+        }
+
+        // Auto slide every 5 seconds
+        setInterval(nextSlide, 5000);
+    </script>
 </body>
 </html>

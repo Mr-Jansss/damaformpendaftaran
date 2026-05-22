@@ -31,6 +31,9 @@
         .panitia-icon {
             font-size: 2rem;
             color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
         }
         
         .panitia-title {
@@ -127,7 +130,10 @@
         <div class="container">
             <div class="panitia-navbar-content">
                 <div class="panitia-brand">
-                    <div class="panitia-icon">🏆</div>
+                    <div class="panitia-icon">
+                        <img src="imageHero/logounpatti.png" alt="Logo Unpatti" style="height: 2rem; width: auto; margin-right: 0.25rem;">
+                        <img src="imageHero/logofst.png" alt="Logo FST" style="height: 2rem; width: auto;">
+                    </div>
                     <div>
                         <div class="panitia-title">Dashboard Panitia</div>
                         <div class="panitia-subtitle" id="panitiaName">Loading...</div>
