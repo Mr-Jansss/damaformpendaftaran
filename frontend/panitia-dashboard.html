@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Panitia - Olimpiade Sains</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Navbar Panitia */
+        .panitia-navbar {
+            background: var(--white);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .panitia-navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .panitia-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .panitia-icon {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+        
+        .panitia-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--gray-800);
+        }
+        
+        .panitia-subtitle {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+        }
+        
+        .panitia-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .panitia-link {
+            color: var(--gray-600);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .panitia-link:hover {
+            color: var(--primary);
+        }
+        
+        /* Main Content */
+        .panitia-content {
+            padding: 2rem 0;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        /* Table Header */
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .table-filters {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        /* Action Buttons */
+        .btn-sm {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        /* Icons */
+        .icon-home::before { content: "🏠"; margin-right: 0.5rem; }
+        .icon-logout::before { content: "🚪"; margin-right: 0.5rem; }
+        .icon-check::before { content: "✅"; }
+        .icon-times::before { content: "❌"; }
+        .icon-eye::before { content: "👁️"; }
+        .icon-close::before { content: "✖️"; }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .panitia-navbar-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="panitia-navbar">
+        <div class="container">
+            <div class="panitia-navbar-content">
+                <div class="panitia-brand">
+                    <div class="panitia-icon">🏆</div>
+                    <div>
+                        <div class="panitia-title">Dashboard Panitia</div>
+                        <div class="panitia-subtitle" id="panitiaName">Loading...</div>
+                    </div>
+                </div>
+                <div class="panitia-actions">
+                    <a href="index.html" class="panitia-link icon-home">Website</a>
+                    <button type="button" onclick="logout()" class="btn btn-danger icon-logout">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="panitia-content">
+        <div class="container">
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div>
+                        <p style="color: var(--gray-500); font-size: 0.875rem;">Pending</p>
+                        <h3 class="stat-value" style="color: var(--yellow);" id="totalPending">0</h3>
+                    </div>
+                    <div class="stat-icon" style="background: #FEF3C7; color: var(--yellow);">⏳</div>
+                </div>
+
+                <div class="stat-card">
+                    <div>
+                        <p style="color: var(--gray-500); font-size: 0.875rem;">Approved</p>
+                        <h3 class="stat-value" style="color: var(--green);" id="totalApproved">0</h3>
+                    </div>
+                    <div class="stat-icon" style="background: #D1FAE5; color: var(--green);">✅</div>
+                </div>
+
+                <div class="stat-card">
+                    <div>
+                        <p style="color: var(--gray-500); font-size: 0.875rem;">Rejected</p>
+                        <h3 class="stat-value" style="color: var(--red);" id="totalRejected">0</h3>
+                    </div>
+                    <div class="stat-icon" style="background: #FEE2E2; color: var(--red);">❌</div>
+                </div>
+            </div>
+
+            <!-- Peserta Table -->
+            <div class="card">
+                <div class="table-header">
+                    <h3 style="font-weight: 700; font-size: 1.5rem;">Manajemen Peserta</h3>
+                    <div class="table-filters">
+                        <select id="filterStatus" class="form-select" style="width: auto;">
+                            <option value="">Semua Status</option>
+                            <option value="pending" selected>Pending</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                        <input type="text" id="searchPeserta" placeholder="Cari peserta..." class="form-input" style="width: auto; min-width: 250px;">
+                    </div>
+                </div>
+
+                <div style="overflow-x: auto;">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Nama</th>
+                                <th scope="col">Sekolah</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Tingkat</th>
+                                <th scope="col">Bidang</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablePeserta">
+                            <tr>
+                                <td colspan="7" class="text-center" style="padding: 2rem;">
+                                    <div class="spinner"></div>
+                                    <p style="margin-top: 0.5rem; color: var(--gray-500);">Memuat data...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Detail Peserta -->
+    <div id="modalDetailPeserta" class="modal" onclick="if(event.target===this) closeModal()">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Detail Peserta</h3>
+                <button type="button" onclick="closeModal()" class="modal-close-btn icon-close" aria-label="Close modal"></button>
+            </div>
+            <div id="detailPesertaContent"></div>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/panitia-dashboard.js"></script>
+</body>
+</html>

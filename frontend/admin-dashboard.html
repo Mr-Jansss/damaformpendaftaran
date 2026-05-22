@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - Olimpiade Sains</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 260px;
+            height: 100vh;
+            background: var(--gray-800);
+            color: var(--white);
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+        
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--gray-700);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .sidebar-icon {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+        
+        .sidebar-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        
+        .sidebar-subtitle {
+            font-size: 0.875rem;
+            color: var(--gray-400);
+        }
+        
+        .sidebar-nav {
+            padding: 1rem;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 0.5rem;
+            color: var(--white);
+            text-decoration: none;
+            transition: background 0.3s;
+            cursor: pointer;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            font-size: 1rem;
+        }
+        
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--gray-700);
+        }
+        
+        .nav-link-icon::before {
+            font-size: 1.1rem;
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+        
+        .page-header {
+            margin-bottom: 2rem;
+        }
+        
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gray-800);
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-subtitle {
+            color: var(--gray-600);
+        }
+        
+        /* Section Toggle */
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        /* Charts Grid */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        /* Table Actions */
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .table-filters {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        /* Action Buttons */
+        .btn-sm {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        /* Icons */
+        .icon-chart::before { content: "📊"; }
+        .icon-users::before { content: "👥"; }
+        .icon-user-tie::before { content: "👔"; }
+        .icon-edit::before { content: "✏️"; }
+        .icon-home::before { content: "🏠"; }
+        .icon-logout::before { content: "🚪"; }
+        .icon-plus::before { content: "➕"; }
+        .icon-save::before { content: "💾"; }
+        .icon-check::before { content: "✅"; }
+        .icon-times::before { content: "❌"; }
+        .icon-eye::before { content: "👁️"; }
+        .icon-trash::before { content: "🗑️"; }
+        .icon-excel::before { content: "📊"; }
+        .icon-close::before { content: "✖️"; }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .stats-grid,
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-icon">🏆</div>
+            <div>
+                <div class="sidebar-title">Admin Panel</div>
+                <div class="sidebar-subtitle" id="adminName">Loading...</div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="javascript:void(0)" class="nav-link active icon-chart" onclick="showSection('dashboard', event)">
+                Dashboard
+            </a>
+            <a href="javascript:void(0)" class="nav-link icon-users" onclick="showSection('peserta', event)">
+                Manajemen Peserta
+            </a>
+            <a href="javascript:void(0)" class="nav-link icon-user-tie" onclick="showSection('panitia', event)">
+                Manajemen Panitia
+            </a>
+            <a href="javascript:void(0)" class="nav-link icon-edit" onclick="showSection('konten', event)">
+                Konten Halaman
+            </a>
+            <a href="index.html" class="nav-link icon-home">
+                Lihat Website
+            </a>
+            <button type="button" onclick="logout()" class="nav-link logout-btn icon-logout">
+                Logout
+            </button>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="page-header">
+            <h2 class="page-title">Dashboard Admin</h2>
+            <p class="page-subtitle">Selamat datang di panel administrasi</p>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="section-dashboard" class="section active">
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div>
+                        <p class="stat-label">Total Peserta</p>
+                        <h3 class="stat-value stat-value-gray" id="totalPeserta">0</h3>
+                    </div>
+                    <div class="stat-icon stat-icon-blue">👥</div>
+                </div>
+
+                <div class="stat-card">
+                    <div>
+                        <p class="stat-label">Approved</p>
+                        <h3 class="stat-value stat-value-green" id="totalApproved">0</h3>
+                    </div>
+                    <div class="stat-icon stat-icon-green">✅</div>
+                </div>
+
+                <div class="stat-card">
+                    <div>
+                        <p class="stat-label">Pending</p>
+                        <h3 class="stat-value stat-value-yellow" id="totalPending">0</h3>
+                    </div>
+                    <div class="stat-icon stat-icon-yellow">⏳</div>
+                </div>
+
+                <div class="stat-card">
+                    <div>
+                        <p class="stat-label">Rejected</p>
+                        <h3 class="stat-value stat-value-red" id="totalRejected">0</h3>
+                    </div>
+                    <div class="stat-icon stat-icon-red">❌</div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="charts-grid">
+                <div class="card">
+                    <h3 class="card-title">Peserta per Tingkat</h3>
+                    <canvas id="chartTingkat"></canvas>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Peserta per Bidang Lomba</h3>
+                    <canvas id="chartBidang"></canvas>
+                </div>
+            </div>
+
+            <!-- Export Button -->
+            <div class="card">
+                <h3 class="card-title">Export Data</h3>
+                <button type="button" onclick="exportPeserta()" class="btn btn-success icon-excel">
+                    Export Peserta Approved ke Excel
+                </button>
+            </div>
+        </div>
+
+        <!-- Peserta Section -->
+        <div id="section-peserta" class="section">
+            <div class="card">
+                <div class="table-header">
+                    <h3 class="card-title-lg">Manajemen Peserta</h3>
+                    <div class="table-filters">
+                        <select id="filterStatus" class="filter-select form-select">
+                            <option value="">Semua Status</option>
+                            <option value="pending">Pending</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                        <input type="text" id="searchPesertaAdmin" placeholder="Cari peserta..." class="filter-input form-input">
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Nama</th>
+                                <th scope="col">Sekolah</th>
+                                <th scope="col">Tingkat</th>
+                                <th scope="col">Bidang</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablePesertaAdmin">
+                            <tr>
+                                <td colspan="6" class="table-loading">
+                                    <div class="spinner"></div>
+                                    <p class="table-loading-text">Memuat data...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panitia Section -->
+        <div id="section-panitia" class="section">
+            <div class="card">
+                <div class="table-header">
+                    <h3 class="card-title-lg">Manajemen Panitia</h3>
+                    <button type="button" onclick="showModalTambahPanitia()" class="btn btn-primary icon-plus">
+                        Tambah Panitia
+                    </button>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Username</th>
+                                <th scope="col">Nama Lengkap</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Role</th>
+                                <th scope="col">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablePanitia">
+                            <tr>
+                                <td colspan="5" class="table-loading">
+                                    <div class="spinner"></div>
+                                    <p class="table-loading-text">Memuat data...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Konten Section -->
+        <div id="section-konten" class="section">
+            <div class="card">
+                <h3 class="card-title-lg">Edit Konten Halaman</h3>
+                <form id="formKonten">
+                    <!-- Form fields will be populated dynamically -->
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Detail Peserta -->
+    <div id="modalDetailPeserta" class="modal" onclick="if(event.target===this) closeModal('modalDetailPeserta')">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Detail Peserta</h3>
+                <button type="button" onclick="closeModal('modalDetailPeserta')" class="modal-close-btn icon-close" aria-label="Close modal"></button>
+            </div>
+            <div id="detailPesertaContent"></div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah/Edit Panitia -->
+    <div id="modalPanitia" class="modal" onclick="if(event.target===this) closeModal('modalPanitia')">
+        <div class="modal-content-narrow modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalPanitiaTitle">Tambah Panitia</h3>
+                <button type="button" onclick="closeModal('modalPanitia')" class="modal-close-btn icon-close" aria-label="Close modal"></button>
+            </div>
+            <form id="formPanitia">
+                <input type="hidden" name="id" id="panitiaId">
+
+                <div class="form-group">
+                    <label class="form-label">Username *</label>
+                    <input type="text" name="username" id="panitiaUsername" required class="form-input" autocomplete="username">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Password *</label>
+                    <input type="password" name="password" id="panitiaPassword" class="form-input" autocomplete="new-password">
+                    <p class="form-help-text">Kosongkan jika tidak ingin mengubah password</p>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nama Lengkap *</label>
+                    <input type="text" name="nama_lengkap" id="panitiaNama" required class="form-input" autocomplete="name">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" id="panitiaEmail" class="form-input" autocomplete="email">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Role *</label>
+                    <select name="role" id="panitiaRole" required class="form-select">
+                        <option value="panitia">Panitia</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+
+                <div class="modal-form-actions">
+                    <button type="submit" class="btn btn-primary icon-save">
+                        Simpan
+                    </button>
+                    <button type="button" onclick="closeModal('modalPanitia')" class="btn btn-secondary">
+                        Batal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/chart.min.js"></script>
+    <script src="js/admin-dashboard.js"></script>
+</body>
+</html>
